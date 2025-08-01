@@ -1,0 +1,138 @@
+[
+  {
+    "name": "Simran Ahuja",
+    "dob": "2002-10-03",
+    "vibe": "Glamorous, outgoing, gossips over chai",
+    "traits": {
+      "daily_rhythm": "night",
+      "lifestyle": "social",
+      "study_habits": "collab",
+      "room_vibe": "minimal",
+      "conflict_style": "direct"
+    },
+    "room_preferences": {
+        "type": "twin",
+        "floor": "first",
+        "has_window": true
+    }
+  },
+  {
+    "name": "Meher Kaur",
+    "dob": "2000-03-13",
+    "vibe": "Calm, neat freak, plant mom",
+    "traits": {
+      "daily_rhythm": "morning",
+      "lifestyle": "chill",
+      "study_habits": "quiet",
+      "room_vibe": "cozy",
+      "conflict_style": "avoidant"
+    },
+    "room_preferences": {
+        "type": "twin",
+        "floor": "ground",
+        "has_window": true
+    }
+  },
+  {
+    "name": "Jannat Sheikh",
+    "dob": "2005-01-25",
+    "vibe": "Techie + indie music nerd",
+    "traits": {
+      "daily_rhythm": "night",
+      "lifestyle": "chill",
+      "study_habits": "collab",
+      "room_vibe": "maximal",
+      "conflict_style": "direct"
+    },
+    "room_preferences": {
+        "type": "twin",
+        "floor": "first",
+        "has_window": false
+    }
+  },
+  {
+    "name": "Tanvi Patel",
+    "dob": "2004-04-03",
+    "vibe": "Family-oriented, Garba lover, food enthusiast",
+    "traits": {
+      "daily_rhythm": "morning",
+      "lifestyle": "social",
+      "study_habits": "collab",
+      "room_vibe": "cozy",
+      "conflict_style": "avoidant"
+    },
+    "room_preferences": {
+        "type": "triple",
+        "floor": "first",
+        "has_window": false
+    }
+  },
+  {
+    "name": "Zainab Khan",
+    "dob": "2001-02-14",
+    "vibe": "Startup junkie, bookworm, strong opinions",
+    "traits": {
+      "daily_rhythm": "night",
+      "lifestyle": "chill",
+      "study_habits": "collab",
+      "room_vibe": "minimal",
+      "conflict_style": "avoidant"
+    },
+    "room_preferences": {
+        "type": "twin",
+        "floor": "ground",
+        "has_window": true
+    }
+  },
+  {
+    "name": "Sharanya Hegde",
+    "dob": "2004-05-11",
+    "vibe": "Beachy, soft spoken, artsy",
+    "traits": {
+      "daily_rhythm": "morning",
+      "lifestyle": "social",
+      "study_habits": "quiet",
+      "room_vibe": "cozy",
+      "conflict_style": "avoidant"
+    },
+    "room_preferences": {
+        "type": "twin",
+        "floor": "first",
+        "has_window": true
+    }
+  },
+  {
+    "name": "Natasha Roy",
+    "dob": "2004-04-01",
+    "vibe": "Intellectual + meme lord, coffee > chai",
+    "traits": {
+      "daily_rhythm": "morning",
+      "lifestyle": "chill",
+      "study_habits": "collab",
+      "room_vibe": "social",
+      "conflict_style": "direct"
+    },
+    "room_preferences": {
+        "type": "triple",
+        "floor": "ground",
+        "has_window": false
+    }
+  },
+  {
+    "name": "Vidhi Mittal",
+    "dob": "2003-12-08",
+    "vibe": "Nature girl, old soul, lover girl",
+    "traits": {
+      "daily_rhythm": "night",
+      "lifestyle": "chill",
+      "study_habits": "collab",
+      "room_vibe": "chill",
+      "conflict_style": "avoidant"
+    },
+    "room_preferences": {
+        "type": "twin",
+        "floor": "first",
+        "has_window": true
+    }
+  }
+]

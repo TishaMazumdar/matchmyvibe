@@ -1,0 +1,48 @@
+[
+  {
+    "id": 1,
+    "question": "When do you feel most productive – early in the morning or late at night?",
+    "trait": "daily_rhythm",
+    "keywords": {
+      "morning": ["early", "sunrise", "morning", "5am", "6am", "7am", "daylight"],
+      "night": ["night", "late", "midnight", "2am", "after dark", "never"]
+    }
+  },
+  {
+    "id": 2,
+    "question": "How do you prefer to spend your weekends?",
+    "trait": "lifestyle",
+    "keywords": {
+      "social": ["party", "hang out", "friends", "clubbing", "concert", "dance"],
+      "chill": ["sleep", "read", "movies", "Netflix", "stay in", "relax"]
+    }
+  },
+  {
+    "id": 3,
+    "question": "Describe your ideal study or work setup.",
+    "trait": "study_habits",
+    "keywords": {
+      "quiet": ["quiet", "library", "alone", "peace", "silence", "headphones"],
+      "collab": ["music", "group", "discussion", "talk", "buzz", "friends"]
+    }
+  },
+  {
+    "id": 4,
+    "question": "What does your ideal room environment look like?",
+    "trait": "room_vibe",
+    "keywords": {
+      "cozy": ["warm", "cozy", "soft", "blanket", "fairy lights", "personal"],
+      "minimal": ["clean", "organized", "minimal", "neat", "white"],
+      "maximal": ["loud", "colourful", "bright", "trinkets", "clutter"]
+    }
+  },
+  {
+    "id": 5,
+    "question": "How do you usually handle conflicts or disagreements?",
+    "trait": "conflict_style",
+    "keywords": {
+      "direct": ["talk", "straightforward", "confront", "clear", "open"],
+      "avoidant": ["ignore", "avoid", "let go", "silent", "walk away"]
+    }
+  }
+]
