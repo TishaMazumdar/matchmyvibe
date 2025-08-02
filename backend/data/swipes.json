@@ -1,14 +1,7 @@
 {
   "a@gmail.com": {
     "liked": [
-      "persona_6",
-      "persona_3",
-      "persona_2",
-      "persona_7",
-      "persona_4",
-      "T102",
-      "T204",
-      "b@gmail.com"
+      "persona_6"
     ],
     "disliked": [
       "persona_1",
@@ -20,18 +13,23 @@
       "T201",
       "T205",
       "T203",
-      "T202"
+      "T202",
+      "x@gmail.com"
     ]
   },
   "b@gmail.com": {
     "liked": [
-      "persona_0"
+      "z@gmail.com"
     ],
     "disliked": [
       "persona_5",
       "persona_6",
       "persona_3",
-      "persona_1"
+      "persona_1",
+      "x@gmail.com",
+      "persona_7",
+      "persona_2",
+      "persona_4"
     ]
   }
 }
