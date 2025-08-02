@@ -2,7 +2,7 @@ from fastapi import FastAPI, Request, Form
 from fastapi.responses import RedirectResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 from starlette.middleware.sessions import SessionMiddleware
-from backend.matcher import rank_rooms_for_user
+from backend.matcher import compute_compatibility, calculate_life_path_number, numerology_score
 import json
 import os
 from dotenv import load_dotenv
@@ -16,167 +16,171 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 app = FastAPI()
 app.add_middleware(SessionMiddleware, secret_key=SECRET_KEY)
 
-templates = Jinja2Templates(directory="static")
+# Point Jinja2 to the 'templates' directory
+templates = Jinja2Templates(directory="templates")
 USERS_FILE = "backend/data/users.json"
+PERSONAS_FILE = "backend/data/personas.json"
+ROOMS_FILE = "backend/data/rooms.json"
+SWIPES_FILE = "backend/data/swipes.json"
+CURRENT_USER_FILE = "backend/data/current_user.json"
 
-
-# ---------- Auth Logic ----------
+# ---------- Auth & Data Logic ----------
 
 def hash_password(password: str) -> str:
     return hashlib.sha256(password.encode()).hexdigest()
 
-def load_users():
-    if not os.path.exists(USERS_FILE):
-        return {}
-    with open(USERS_FILE, "r") as f:
+def load_json_file(filepath: str):
+    """Loads a JSON file, returning the correct empty type if it doesn't exist."""
+    if not os.path.exists(filepath) or os.path.getsize(filepath) == 0:
+        if 'users.json' in filepath or 'swipes.json' in filepath:
+            return {}
+        else:
+            return []
+    with open(filepath, "r") as f:
         return json.load(f)
 
-def save_users(users):
-    with open(USERS_FILE, "w") as f:
-        json.dump(users, f, indent=2)
-
-def signup_user(email: str, password: str) -> bool:
-    users = load_users()
-    if email in users:
-        return False
-    hashed = hash_password(password)
-    users[email] = {"password": hashed}
-    save_users(users)
-    return True
-
-def login_user(email: str, password: str) -> bool:
-    users = load_users()
-    user = users.get(email)
-    if not user:
-        return False
-    return user["password"] == hash_password(password)
-
-# ---------- Current Users ----------
-
-CURRENT_USERS_FILE = "backend/data/current_users.json"
-
-def load_current_users():
-    if not os.path.exists(CURRENT_USERS_FILE):
-        return []
-    with open(CURRENT_USERS_FILE, "r") as f:
-        return json.load(f)
-
-def save_current_users(users):
-    with open(CURRENT_USERS_FILE, "w") as f:
-        json.dump(users, f, indent=2)
+def save_json_file(filepath: str, data):
+    with open(filepath, "w") as f:
+        json.dump(data, f, indent=2)
 
 # ---------- Routes ----------
 
 @app.get("/")
 def home(request: Request):
-    email = request.session.get("email")
-    users = load_users()
-
-    if not email or email not in users:
-        return RedirectResponse("/login", status_code=302)
-
-    user = users[email]
-    return templates.TemplateResponse("index.html", {
-        "request": request,
-        "name": user["name"],
-        "dob": user["dob"]
-    })
+    """Serves the main landing page."""
+    return templates.TemplateResponse("index.html", {"request": request})
 
 @app.get("/login")
 def login_page(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+    """Serves the login/signup page."""
+    return templates.TemplateResponse("login.html", {"request": request})
 
 @app.get("/signup")
 def signup_page(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+    """Redirects to the login page, which handles both."""
+    return RedirectResponse("/login", status_code=302)
 
 @app.post("/signup")
-def signup(
+async def signup(
     request: Request,
     name: str = Form(...),
     email: str = Form(...),
     password: str = Form(...),
     dob: str = Form(...)
 ):
-    users = load_users()
-
-    # Basic regex: must end in @<something>.com
+    users = load_json_file(USERS_FILE)
     if not re.match(r"[^@]+@[^@]+\.[cC][oO][mM]$", email):
-        return templates.TemplateResponse("index.html", {
-            "request": request,
-            "signup_error": "Enter a valid email ending with .com"
-        })
-
+        return templates.TemplateResponse("login.html", {"request": request, "signup_error": "Enter a valid email ending with .com"})
     if email in users:
-        return templates.TemplateResponse("index.html", {
-            "request": request,
-            "signup_error": "Email already registered"
-        })
+        return templates.TemplateResponse("login.html", {"request": request, "signup_error": "Email already registered"})
 
     users[email] = {
-        "name": name,
-        "password": hash_password(password),
-        "dob": dob,
-        "vibe": "",
-        "traits": {},
-        "room_preferences": {},
-        "assigned_room": None
+        "name": name, "password": hash_password(password), "dob": dob,
+        "vibe": "", "traits": {}, "room_preferences": {}, "assigned_room": None
     }
-
-    save_users(users)
+    save_json_file(USERS_FILE, users)
     request.session["email"] = email
-
-    return templates.TemplateResponse("index.html", {
-        "request": request,
-        "email": email,
-        "signup_success": "Signup successful!"
-    })
+    
+    # After signup, new users go to the traits page to fill out the questionnaire
+    return RedirectResponse("/traits", status_code=302)
 
 @app.post("/login")
-def login(request: Request, email: str = Form(...), password: str = Form(...)):
-    users = load_users()
+async def login(request: Request, email: str = Form(...), password: str = Form(...)):
+    users = load_json_file(USERS_FILE)
     user = users.get(email)
-
     if not user or user["password"] != hash_password(password):
-        return templates.TemplateResponse("index.html", {
-            "request": request,
-            "login_error": "Invalid email or password"
-        })
-
+        return templates.TemplateResponse("login.html", {"request": request, "login_error": "Invalid email or password"})
+    
     request.session["email"] = email
+    save_json_file(CURRENT_USER_FILE, [email])
 
-    current_users = load_current_users()
-    if email not in current_users:
-        current_users.append(email)
-        save_current_users(current_users)
-
+    # --- UPDATE: Existing users who log in go directly to the matching/swipe page ---
     return RedirectResponse("/matching", status_code=302)
+    # --- END UPDATE ---
 
 @app.get("/logout")
 def logout(request: Request):
-    email = request.session.get("email")
     request.session.clear()
+    save_json_file(CURRENT_USER_FILE, [])
+    return RedirectResponse("/", status_code=302)
 
-    current_users = load_current_users()
-    if email in current_users:
-        current_users.remove(email)
-        save_current_users(current_users)
+@app.get("/traits")
+def traits_page(request: Request):
+    """Serves the page for the user to interact with the Omnidimension widget."""
+    if not request.session.get("email"):
+        return RedirectResponse("/login", status_code=302)
+    return templates.TemplateResponse("traits.html", {"request": request})
 
-    return RedirectResponse("/login", status_code=302)
+@app.get("/matching")
+def matching_page(request: Request):
+    """Serves the main swipe interface page."""
+    if not request.session.get("email"):
+        return RedirectResponse("/login", status_code=302)
+    return templates.TemplateResponse("matching.html", {"request": request})
 
-@app.get("/receive_traits")
-def get_traits(request: Request):
-    current_users = load_current_users()
-    if not current_users:
-        return JSONResponse({"status": "no user currently logged in"}, status_code=400)
+# ---------- API Routes for Frontend Interaction ----------
 
-    email = current_users[0]
-    users = load_users()
-    if email not in users:
-        return JSONResponse({"status": "user not found"}, status_code=404)
+@app.get("/ranked-matches")
+async def get_ranked_matches(request: Request):
+    user_email = request.session.get("email")
+    if not user_email:
+        return JSONResponse({"error": "Not logged in"}, status_code=401)
 
-    traits = users[email].get("traits", {})
-    return JSONResponse({"traits": traits})
+    users = load_json_file(USERS_FILE)
+    current_user_data = users.get(user_email)
+    if not current_user_data:
+        return JSONResponse({"error": "User not found"}, status_code=404)
+
+    potential_matches = load_json_file(PERSONAS_FILE)
+    swipes = load_json_file(SWIPES_FILE)
+    user_swipes = swipes.get(user_email, {})
+    seen_personas = user_swipes.get("liked", []) + user_swipes.get("disliked", [])
+    
+    scored_personas = []
+    user_life_path = calculate_life_path_number(current_user_data.get("dob", ""))
+
+    for i, persona in enumerate(potential_matches):
+        if "id" not in persona:
+            persona["id"] = f"persona_{i}"
+            
+        if persona["id"] in seen_personas:
+            continue
+
+        trait_score = compute_compatibility(current_user_data.get("traits", {}), persona.get("traits", {}))
+        persona_life_path = calculate_life_path_number(persona.get("dob", ""))
+        numerology_score_val = numerology_score(user_life_path, persona_life_path) * 2
+        final_score = (0.8 * trait_score) + (0.2 * numerology_score_val)
+        
+        persona_with_score = persona.copy()
+        persona_with_score["score"] = round(final_score * 10, 2)
+        scored_personas.append(persona_with_score)
+
+    scored_personas.sort(key=lambda x: x["score"], reverse=True)
+
+    return JSONResponse(scored_personas)
+
+
+@app.post("/swipe")
+async def handle_swipe(request: Request):
+    user_email = request.session.get("email")
+    if not user_email:
+        return JSONResponse({"error": "Not logged in"}, status_code=401)
+
+    data = await request.json()
+    target_id = data.get("target")
+    direction = data.get("direction")
+
+    swipes = load_json_file(SWIPES_FILE)
+    if user_email not in swipes:
+        swipes[user_email] = {"liked": [], "disliked": []}
+
+    if direction == "right" and target_id not in swipes[user_email]["liked"]:
+        swipes[user_email]["liked"].append(target_id)
+    elif direction == "left" and target_id not in swipes[user_email]["disliked"]:
+        swipes[user_email]["disliked"].append(target_id)
+
+    save_json_file(SWIPES_FILE, swipes)
+    return JSONResponse({"status": "swipe recorded"})
 
 @app.post("/receive_traits")
 async def receive_traits(request: Request):
@@ -185,95 +189,21 @@ async def receive_traits(request: Request):
 
     extracted = data.get("extracted_variables", [])
     
-    current_users = load_current_users()
+    current_users = load_json_file(CURRENT_USER_FILE)
     if not current_users:
         return JSONResponse({"status": "no user currently logged in"}, status_code=400)
 
     email = current_users[0]
 
-    users = load_users()
+    users = load_json_file(USERS_FILE)
     if email not in users:
         return JSONResponse({"status": "user not found"}, status_code=404)
 
-    # Store extracted traits
     for trait in extracted:
         key = trait["key"]
         value = trait["value"]
         users[email]["traits"][key] = value
 
-    save_users(users)
+    save_json_file(USERS_FILE, users)
 
     return JSONResponse({"status": "traits saved successfully"})
-
-@app.get("/ranked-matches")
-async def get_ranked_matches(request: Request):
-    session = request.session
-    user_email = session.get("email")
-
-    if not user_email:
-        return JSONResponse({"error": "Not logged in"}, status_code=401)
-
-    # Load user data
-    with open("backend/data/users.json", "r") as f:
-        users = json.load(f)
-    user_data = users.get(user_email)
-
-    if not user_data:
-        return JSONResponse({"error": "User not found"}, status_code=404)
-
-    # Load room data
-    with open("backend/data/rooms.json", "r") as f:
-        rooms_data = json.load(f)
-
-    # Rank rooms
-    ranked_matches = rank_rooms_for_user(user_data, rooms_data)
-
-    return JSONResponse({"matches": ranked_matches})
-
-@app.post("/swipe")
-async def handle_swipe(
-    request: Request,
-    target: str = Form(...),  # persona ID or user email
-    direction: str = Form(...)  # "right" or "left"
-):
-    session = request.session
-    email = session.get("email")
-
-    if not email:
-        return JSONResponse({"error": "Not logged in"}, status_code=401)
-
-    swipes_file = "backend/data/swipes.json"
-    if os.path.exists(swipes_file):
-        with open(swipes_file, "r") as f:
-            swipes = json.load(f)
-    else:
-        swipes = {}
-
-    if email not in swipes:
-        swipes[email] = {"liked": [], "disliked": []}
-
-    if direction == "right" and target not in swipes[email]["liked"]:
-        swipes[email]["liked"].append(target)
-    elif direction == "left" and target not in swipes[email]["disliked"]:
-        swipes[email]["disliked"].append(target)
-
-
-    with open(swipes_file, "w") as f:
-        json.dump(swipes, f, indent=2)
-
-    return JSONResponse({"status": "swipe recorded"})
-
-@app.get("/get_personas")
-def get_personas():
-    with open("backend/data/personas.json", "r") as f:
-        personas = json.load(f)
-    
-    personas = json.load(f)
-    personas_with_ids = []
-    for i, persona in enumerate(personas):
-        p = persona.copy()
-        if "id" not in p:
-            p["id"] = f"persona_{i}"
-        personas_with_ids.append(p)
-    return JSONResponse(personas_with_ids)
-

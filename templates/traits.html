@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tell Us Your Vibe - MatchMyVibe</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #8B5CF6;
+            --bg-darker: #F8F9FA;
+            --border: rgba(139, 92, 246, 0.2);
+            --text-primary: #1F2937;
+            --text-secondary: #4B5563;
+            --gradient-primary: linear-gradient(135deg, #8B5CF6 0%, #06B6D4 100%);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-darker);
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        .container {
+            text-align: center;
+            padding: 40px;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            max-width: 500px;
+            margin: 20px;
+        }
+        h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 16px; }
+        .gradient-text { background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        p { color: var(--text-secondary); margin-bottom: 32px; font-size: 1.1rem; }
+        .btn {
+            padding: 16px 32px;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            background: var(--gradient-primary);
+            color: white;
+            display: inline-block;
+            margin-top: 32px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="gradient-text">Tell Us Your Vibe!</h1>
+        <p>Click the button in the bottom right and answer a few questions. When you're done, we'll find your matches!</p>
+        <a href="/matching" class="btn">I'm Done, Find My Matches!</a>
+    </div>
+
+    <!-- Omnidimension Widget Script -->
+    <script id="omnidimension-web-widget" async src="https://backend.omnidim.io/web_widget.js?secret_key=bafd2fc621baa36ec98918db2ab130fb"></script>
+</body>
+</html>

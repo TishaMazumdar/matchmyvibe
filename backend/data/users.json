@@ -45,10 +45,29 @@
       "disliked": []
     }
   },
-  "c@gmail.com": {
-    "name": "C",
+  "z@gmail.com": {
+    "name": "Z",
+    "password": "8be16a9bc8e6a414f4ecb09d7c1dcdcd2a70e504340402d645129be434f18f45",
+    "dob": "2003-06-09",
+    "vibe": "",
+    "traits": {
+      "daily_rhythm": "night",
+      "lifestyle": "chill",
+      "study_habits": "collab",
+      "room_vibe": "minimal",
+      "conflict_style": "avoidant"
+    },
+    "room_preferences": {},
+    "assigned_room": null,
+    "swipes": {
+      "liked": [],
+      "disliked": []
+    }
+  },
+  "q@gmail.com": {
+    "name": "Q",
     "password": "bf038251c59b434b02c7279047808368f1ee0a6ee2ab98799158edb05b2eb4d6",
-    "dob": "2001-06-06",
+    "dob": "2005-05-08",
     "vibe": "",
     "traits": {},
     "room_preferences": {},

@@ -1,3 +1,7 @@
+# matcher.py
+
+from datetime import datetime
+
 TRAITS = [
     "daily_rhythm",
     "lifestyle",
@@ -39,6 +43,7 @@ numerology_chart = {
 
 def calculate_life_path_number(dob: str) -> int:
     """Calculate numerology life path number from DOB (yyyy-mm-dd)."""
+    if not dob: return 0
     digits = [int(char) for char in dob if char.isdigit()]
     total = sum(digits)
     
@@ -49,6 +54,8 @@ def calculate_life_path_number(dob: str) -> int:
 
 def numerology_score(user_number: int, other_number: int) -> float:
     """Returns compatibility score between two life path numbers (out of 5)."""
+    if user_number == 0 or other_number == 0: return 1.0 # Return a neutral score if DOB is missing
+    
     same = numerology_chart.get(user_number, {}).get("same", [])
     neutral = numerology_chart.get(user_number, {}).get("neutral", [])
     challenges = numerology_chart.get(user_number, {}).get("challenges", [])
@@ -69,6 +76,7 @@ def compute_compatibility(traits1, traits2):
 
     matching_traits = 0
     total_traits = len(traits1)
+    if total_traits == 0: return 0
 
     for key in traits1:
         if key in traits2:
@@ -81,11 +89,12 @@ def compute_compatibility(traits1, traits2):
 
 def compute_logistics_score(user_prefs, room):
     matches = 0
-    if user_prefs["room_type"] == room["room_type"]:
+    # UPDATE: Use .get() to avoid errors if a key is missing
+    if user_prefs.get("room_type") == room.get("room_type"):
         matches += 1
     if user_prefs.get("floor") == room.get("floor"):
         matches += 1
-    if user_prefs["has_window"] == room["has_window"]:
+    if user_prefs.get("has_window") == room.get("has_window"):
         matches += 1
     return (matches / 3) * 10  # Normalize to 10
 
@@ -144,29 +153,31 @@ def match_user_to_rooms(new_user, rooms):
 def rank_rooms_for_user(new_user, rooms):
     scored_rooms = []
 
-    user_life_path = calculate_life_path_number(new_user["dob"])
+    user_life_path = calculate_life_path_number(new_user.get("dob", ""))
 
     for room in rooms:
-        if len(room.get("occupants", [])) >= room["capacity"]:
+        if len(room.get("occupants", [])) >= room.get("capacity", 1):
             continue
 
         # Roommate compatibility
         compatibility_total = 0
         if room.get("occupants"):
             for occupant in room["occupants"]:
-                compatibility_total += compute_compatibility(new_user["traits"], occupant["traits"])
+                compatibility_total += compute_compatibility(new_user.get("traits", {}), occupant.get("traits", {}))
             compatibility_score = compatibility_total / len(room["occupants"])
         else:
             compatibility_score = 5
 
         # Logistics score
-        logistics_score = compute_logistics_score(new_user["preferences"], room)
+        # --- THIS IS THE MAIN FIX ---
+        # Changed "preferences" to "room_preferences" to match your user data structure in main.py
+        logistics_score = compute_logistics_score(new_user.get("room_preferences", {}), room)
 
         # Numerology score
         numerology_scores = []
-        for occupant in room["occupants"]:
+        for occupant in room.get("occupants", []):
             if "dob" in occupant:
-                occupant_path = calculate_life_path_number(occupant["dob"])
+                occupant_path = calculate_life_path_number(occupant.get("dob", ""))
                 score = numerology_score(user_life_path, occupant_path)
                 numerology_scores.append(score)
         numerology_score_value = (
@@ -179,9 +190,17 @@ def rank_rooms_for_user(new_user, rooms):
                        0.2 * logistics_score +
                        0.1 * numerology_score_value)
 
+        # Add all room occupants to the response for the frontend
+        room_data_with_occupants = room.copy()
+        room_data_with_occupants['occupants_details'] = room.get("occupants", [])
+
+
         scored_rooms.append({
-            "room_id": room["room_id"],
-            "room_data": room,
+            "id": room["room_id"], # Use room_id as the unique identifier
+            "name": f"Room {room['room_id']}",
+            "vibe": f"{len(room.get('occupants', []))} / {room.get('capacity', 1)} occupants",
+            "avatar_color": "#A78BFA", # A default color for rooms
+            "room_data": room_data_with_occupants,
             "score": round(final_score * 10, 2)  # Convert to percentage
         })
 

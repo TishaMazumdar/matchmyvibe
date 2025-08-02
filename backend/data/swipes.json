@@ -1,0 +1,51 @@
+{
+  "a@gmail.com": {
+    "liked": [
+      "persona_1",
+      "persona_2",
+      "persona_4"
+    ],
+    "disliked": [
+      "persona_5",
+      "persona_6",
+      "persona_3",
+      "persona_7",
+      "persona_0"
+    ]
+  },
+  "b@gmail.com": {
+    "liked": [
+      "persona_2",
+      "persona_7",
+      "persona_1"
+    ],
+    "disliked": [
+      "persona_4",
+      "persona_0",
+      "persona_3",
+      "persona_6",
+      "persona_5"
+    ]
+  },
+  "z@gmail.com": {
+    "liked": [],
+    "disliked": [
+      "persona_0",
+      "persona_2",
+      "persona_3",
+      "persona_4",
+      "persona_5",
+      "persona_6",
+      "persona_1",
+      "persona_7"
+    ]
+  },
+  "q@gmail.com": {
+    "liked": [
+      "persona_1"
+    ],
+    "disliked": [
+      "persona_7"
+    ]
+  }
+}

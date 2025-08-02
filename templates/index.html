@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MatchMyVibe - Find Your Perfect Roommate</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #8B5CF6;
+            --primary-dark: #7C3AED;
+            --accent: #06B6D4;
+            --accent-light: #67E8F9;
+            --bg-dark: #FEFEFE;
+            --bg-darker: #F8F9FA;
+            --card-bg: rgba(139, 92, 246, 0.08);
+            --glass: rgba(255, 255, 255, 0.8);
+            --border: rgba(139, 92, 246, 0.2);
+            --text-primary: #1F2937;
+            --text-secondary: #4B5563;
+            --text-muted: #6B7280;
+            --gradient-primary: linear-gradient(135deg, #8B5CF6 0%, #06B6D4 100%);
+            --gradient-accent: linear-gradient(135deg, #06B6D4 0%, #67E8F9 100%);
+            --shadow-glow: 0 0 40px rgba(139, 92, 246, 0.15);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+        .bg-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(139, 92, 246, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(6, 182, 212, 0.15) 0%, transparent 40%),
+                linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-darker) 100%);
+        }
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 20px 0;
+            backdrop-filter: blur(20px);
+            background: rgba(254, 254, 254, 0.8);
+            border-bottom: 1px solid var(--border);
+        }
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo { font-size: 24px; font-weight: 800; color: #000; text-decoration: none; }
+        .logo .highlight { color: var(--primary); }
+        .nav-links { display: flex; gap: 32px; align-items: center; }
+        .nav-link { color: var(--text-secondary); text-decoration: none; font-weight: 500; }
+        .btn { padding: 12px 24px; border-radius: 50px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; border: none; cursor: pointer; font-size: 14px; }
+        .btn-primary { background: var(--gradient-primary); color: white; box-shadow: var(--shadow-glow); }
+        .btn-secondary { background: var(--glass); color: var(--text-primary); border: 1px solid var(--border); }
+        .hero { min-height: 100vh; display: flex; align-items: center; position: relative; padding: 120px 0 80px; }
+        .hero-container { max-width: 1200px; margin: 0 auto; padding: 0 24px; text-align: center; }
+        .hero-content { animation: fadeInUp 1s ease 0.3s both; }
+        .hero h1 { font-size: clamp(3rem, 6vw, 4.5rem); font-weight: 800; line-height: 1.1; margin-bottom: 24px; }
+        .gradient-text { background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .hero p { font-size: 1.2rem; color: var(--text-secondary); margin-bottom: 40px; line-height: 1.6; max-width: 600px; margin-left: auto; margin-right: auto;}
+        .hero-actions { display: flex; gap: 16px; justify-content: center; }
+        .btn-hero { padding: 16px 32px; font-size: 16px; }
+        .cta-section { padding: 120px 0; text-align: center; }
+        .section-container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+        .cta-content { max-width: 600px; margin: 0 auto; }
+        .section-title { font-size: clamp(2.5rem, 5vw, 3.5rem); font-weight: 800; margin-bottom: 24px; line-height: 1.2; }
+        .section-description { font-size: 1.2rem; color: var(--text-secondary); margin-bottom: 40px; }
+        .cta-button { display: inline-flex; padding: 20px 40px; background: var(--gradient-primary); color: white; text-decoration: none; border-radius: 50px; font-weight: 700; font-size: 18px; box-shadow: var(--shadow-glow); transition: all 0.3s; }
+        .cta-button:hover { transform: translateY(-4px); box-shadow: 0 20px 60px rgba(139, 92, 246, 0.4); }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+    <div class="bg-container"></div>
+    <nav>
+        <div class="nav-container">
+            <a href="/" class="logo">MatchMyVibe<span class="highlight">.</span></a>
+            <div class="nav-actions">
+                <a href="/login" class="btn btn-secondary">Login / Sign Up</a>
+            </div>
+        </div>
+    </nav>
+    <section id="home" class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1>Find Your Perfect <span class="gradient-text">Roommate</span> Match</h1>
+                <p>Skip the awkward interviews and endless scrolling. Find compatible roommates who match your vibe instantly.</p>
+                <div class="hero-actions">
+                    <a href="/matching" class="btn btn-primary btn-hero">Start Swiping Now</a>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

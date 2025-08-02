@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Your Match - MatchMyVibe</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://hammerjs.github.io/dist/hammer.min.js"></script>
+    <style>
+        :root {
+            --primary: #8B5CF6;
+            --bg-darker: #F8F9FA;
+            --border: rgba(139, 92, 246, 0.2);
+            --text-primary: #1F2937;
+            --text-secondary: #4B5563;
+            --gradient-primary: linear-gradient(135deg, #8B5CF6 0%, #06B6D4 100%);
+            --reject-color: #EF4444;
+            --accept-color: #10B981;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-darker);
+            color: var(--text-primary);
+            padding-top: 80px;
+            overflow: hidden; /* Prevent scrolling when overlay is active */
+        }
+        
+        .page-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px 0;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            z-index: 100;
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+        .logo .highlight {
+            color: var(--primary);
+        }
+
+        .swipe-container {
+            width: 100%;
+            max-width: 400px;
+            padding: 24px;
+            margin: 20px auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .swipe-header { text-align: center; margin-bottom: 24px; }
+        .swipe-header h1 { font-size: 2.5rem; font-weight: 800; }
+        .gradient-text { background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .swipe-deck { position: relative; width: 100%; height: 450px; }
+        .swipe-card {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            cursor: grab;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            touch-action: none;
+        }
+        .swipe-card.dragging { transition: none; }
+        .swipe-card .result-avatar { width: 120px; height: 120px; font-size: 3rem; margin-bottom: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; color: white; }
+        .swipe-card .result-info h3 { font-size: 1.8rem; font-weight: 700; }
+        .swipe-card .result-info p { font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 16px; }
+        .swipe-card .result-score { font-size: 1.2rem; font-weight: 600; color: var(--primary); }
+        .swipe-actions { display: flex; justify-content: center; gap: 24px; margin-top: 24px; }
+        .action-btn { width: 60px; height: 60px; border-radius: 50%; border: 1px solid var(--border); background: white; font-size: 2rem; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; }
+        .action-btn:hover { transform: scale(1.1); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        #reject-btn { color: var(--reject-color); }
+        #accept-btn { color: var(--accept-color); }
+        #no-more-profiles { display: flex; align-items: center; justify-content: center; height: 100%; flex-direction: column; text-align: center; }
+        .btn { padding: 12px 24px; border-radius: 50px; font-weight: 600; text-decoration: none; border: 1px solid #ddd; background: white; color: var(--text-primary); cursor: pointer; }
+
+        /* --- UPDATE: Styles for "It's a Match!" Overlay --- */
+        .match-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1001;
+            display: none; /* Hidden by default */
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .match-overlay.show {
+            display: flex;
+            animation: fadeInOverlay 0.5s ease;
+        }
+        @keyframes fadeInOverlay { from { opacity: 0; } to { opacity: 1; } }
+        
+        .match-content h1 { font-size: 3.5rem; font-weight: 800; margin-bottom: 16px; }
+        .match-content p { font-size: 1.2rem; color: var(--text-secondary); margin-bottom: 40px; }
+        
+        .match-avatars {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+        .match-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 5px solid white;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: 700;
+            color: white;
+        }
+        .user-avatar {
+            background: var(--gradient-primary);
+            transform: translateX(20px);
+        }
+        .persona-avatar {
+            transform: translateX(-20px);
+        }
+        /* --- END UPDATE --- */
+    </style>
+</head>
+<body>
+    <header class="page-header">
+        <div class="header-container">
+            <a href="/" class="logo">MatchMyVibe<span class="highlight">.</span></a>
+            <a href="/logout" class="btn">Logout</a>
+        </div>
+    </header>
+
+    <div class="swipe-container">
+        <div class="swipe-header">
+            <h1 class="gradient-text">Find Your Match</h1>
+        </div>
+        <div id="swipe-deck" class="swipe-deck"></div>
+        <div class="swipe-actions">
+            <button id="reject-btn" class="action-btn">❌</button>
+            <button id="accept-btn" class="action-btn">❤️</button>
+        </div>
+    </div>
+
+    <!-- UPDATE: Added "It's a Match!" Overlay HTML -->
+    <div id="match-overlay" class="match-overlay">
+        <div class="match-content">
+            <h1 class="gradient-text">It's a Match!</h1>
+            <p>You and <strong id="match-name"></strong> have liked each other.</p>
+            <div class="match-avatars">
+                <div class="match-avatar user-avatar">Y</div>
+                <div id="match-avatar" class="match-avatar persona-avatar"></div>
+            </div>
+            <button id="close-match-btn" class="btn">Keep Swiping</button>
+        </div>
+    </div>
+    <!-- END UPDATE -->
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const swipeDeck = document.getElementById('swipe-deck');
+            const acceptBtn = document.getElementById('accept-btn');
+            const rejectBtn = document.getElementById('reject-btn');
+            
+            // --- UPDATE: Get Match Overlay Elements ---
+            const matchOverlay = document.getElementById('match-overlay');
+            const matchName = document.getElementById('match-name');
+            const matchAvatar = document.getElementById('match-avatar');
+            const closeMatchBtn = document.getElementById('close-match-btn');
+            // --- END UPDATE ---
+
+            async function fetchProfiles() {
+                try {
+                    const response = await fetch('/ranked-matches');
+                    if (!response.ok) {
+                        if (response.status === 401) { window.location.href = '/login'; }
+                        throw new Error('Failed to fetch profiles');
+                    }
+                    return await response.json() || [];
+                } catch (error) {
+                    console.error('Error fetching profiles:', error);
+                    swipeDeck.innerHTML = `<div id="no-more-profiles"><h3>Could not load profiles</h3><p>Please try again later.</p></div>`;
+                    return [];
+                }
+            }
+
+            function displaySwipeCards(profiles) {
+                swipeDeck.innerHTML = '';
+                if (profiles && profiles.length > 0) {
+                    profiles.reverse().forEach((profile, index) => {
+                        const card = document.createElement('div');
+                        card.className = 'swipe-card';
+                        card.dataset.id = profile.id || profile.email; 
+                        card.dataset.name = profile.name;
+                        card.dataset.avatarInitial = profile.name.charAt(0);
+                        card.dataset.avatarColor = profile.avatar_color || '#cccccc';
+
+                        card.style.zIndex = profiles.length - index;
+                        card.style.transform = `translateY(${index * -4}px) scale(${1 - (index * 0.02)})`;
+                        
+                        card.innerHTML = `
+                            <div class="result-avatar" style="background-color: ${profile.avatar_color || '#cccccc'};">${profile.name.charAt(0)}</div>
+                            <div class="result-info" style="text-align: center;">
+                                <h3>${profile.name}</h3>
+                                <p>${profile.vibe || 'A great potential roommate!'}</p>
+                                <p class="result-score"><b>${profile.score}%</b> Match</p>
+                            </div>
+                        `;
+                        swipeDeck.appendChild(card);
+                    });
+                    initializeSwipe();
+                } else {
+                    showEndState();
+                }
+            }
+
+            function initializeSwipe() {
+                document.querySelectorAll('.swipe-card').forEach(card => {
+                    const hammer = new Hammer(card);
+                    hammer.on('pan', e => {
+                        card.classList.add('dragging');
+                        card.style.transform = `translateX(${e.deltaX}px) rotate(${e.deltaX * 0.05}deg)`;
+                    });
+                    hammer.on('panend', e => {
+                        card.classList.remove('dragging');
+                        if (Math.abs(e.deltaX) > 100) {
+                            swipeCard(e.deltaX > 0 ? 'right' : 'left', card);
+                        } else {
+                            card.style.transform = '';
+                        }
+                    });
+                });
+            }
+            
+            function swipeCard(direction, cardElement) {
+                const card = cardElement || document.querySelector('.swipe-card:not(.swiped)');
+                if (!card) return;
+
+                card.classList.add('swiped');
+                const flyOutDirection = direction === 'right' ? 1 : -1;
+                card.style.transform = `translateX(${flyOutDirection * 1000}px) rotate(${flyOutDirection * 15}deg)`;
+                card.style.opacity = '0';
+                
+                handleSwipe(card.dataset.id, direction);
+
+                // --- UPDATE: Show match screen on right swipe ---
+                if (direction === 'right') {
+                    setTimeout(() => showMatchScreen(card), 200);
+                }
+                // --- END UPDATE ---
+                
+                setTimeout(() => {
+                    card.remove();
+                    checkEndState();
+                }, 300);
+            }
+            
+            acceptBtn.addEventListener('click', () => swipeCard('right'));
+            rejectBtn.addEventListener('click', () => swipeCard('left'));
+            
+            async function handleSwipe(targetId, direction) {
+                try {
+                    await fetch('/swipe', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ target: targetId, direction: direction })
+                    });
+                } catch (error) {
+                    console.error('Failed to record swipe:', error);
+                }
+            }
+            
+            function checkEndState() {
+                if (document.querySelectorAll('.swipe-card:not(.swiped)').length === 0) {
+                    showEndState();
+                }
+            }
+            
+            function showEndState() {
+                 swipeDeck.innerHTML = `<div id="no-more-profiles"><h3>That's everyone!</h3><p>You've seen all available profiles.</p><br/><a href="/" class="btn">Go Back Home</a></div>`;
+            }
+
+            // --- UPDATE: Functions to control the match overlay ---
+            function showMatchScreen(card) {
+                matchName.textContent = card.dataset.name;
+                matchAvatar.textContent = card.dataset.avatarInitial;
+                matchAvatar.style.backgroundColor = card.dataset.avatarColor;
+                matchOverlay.classList.add('show');
+            }
+
+            function hideMatchScreen() {
+                matchOverlay.classList.remove('show');
+            }
+
+            closeMatchBtn.addEventListener('click', hideMatchScreen);
+            // --- END UPDATE ---
+
+            fetchProfiles().then(displaySwipeCards);
+        });
+    </script>
+</body>
+</html>
