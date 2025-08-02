@@ -4,14 +4,51 @@
     "password": "9af15b336e6a9619928537df30b2e6a2376569fcf9d7e773eccede65606529a0",
     "dob": "2025-07-10",
     "vibe": "",
-    "traits": {},
-    "room_preferences": {},
-    "assigned_room": null
+    "traits": {
+      "daily_rhythm": "night",
+      "lifestyle": "chill",
+      "study_habits": "collab",
+      "room_vibe": "minimal",
+      "conflict_style": "avoidant"
+    },
+    "room_preferences": {
+      "room_type": "twin",
+      "floor": 1,
+      "has_window": true
+    },
+    "assigned_room": null,
+    "swipes": {
+      "liked": [],
+      "disliked": []
+    }
   },
   "b@gmail.com": {
     "name": "B",
     "password": "bf038251c59b434b02c7279047808368f1ee0a6ee2ab98799158edb05b2eb4d6",
     "dob": "2006-04-12",
+    "vibe": "",
+    "traits": {
+      "daily_rhythm": "night",
+      "lifestyle": "chill",
+      "study_habits": "collab",
+      "room_vibe": "minimal",
+      "conflict_style": "avoidant"
+    },
+    "room_preferences": {
+      "room_type": "twin",
+      "floor": 1,
+      "has_window": false
+    },
+    "assigned_room": null,
+    "swipes": {
+      "liked": [],
+      "disliked": []
+    }
+  },
+  "c@gmail.com": {
+    "name": "C",
+    "password": "bf038251c59b434b02c7279047808368f1ee0a6ee2ab98799158edb05b2eb4d6",
+    "dob": "2001-06-06",
     "vibe": "",
     "traits": {},
     "room_preferences": {},

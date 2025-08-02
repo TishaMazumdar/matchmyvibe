@@ -150,7 +150,7 @@ def login(request: Request, email: str = Form(...), password: str = Form(...)):
         current_users.append(email)
         save_current_users(current_users)
 
-    return RedirectResponse("/", status_code=302)
+    return RedirectResponse("/matching", status_code=302)
 
 @app.get("/logout")
 def logout(request: Request):
@@ -208,24 +208,72 @@ async def receive_traits(request: Request):
 @app.get("/ranked-matches")
 async def get_ranked_matches(request: Request):
     session = request.session
-    user_id = session.get("user_id")
+    user_email = session.get("email")
 
-    if not user_id:
+    if not user_email:
         return JSONResponse({"error": "Not logged in"}, status_code=401)
 
     # Load user data
-    with open("data/users.json", "r") as f:
+    with open("backend/data/users.json", "r") as f:
         users = json.load(f)
-    user_data = users.get(user_id)
+    user_data = users.get(user_email)
 
     if not user_data:
         return JSONResponse({"error": "User not found"}, status_code=404)
 
     # Load room data
-    with open("data/rooms.json", "r") as f:
+    with open("backend/data/rooms.json", "r") as f:
         rooms_data = json.load(f)
 
     # Rank rooms
     ranked_matches = rank_rooms_for_user(user_data, rooms_data)
 
     return JSONResponse({"matches": ranked_matches})
+
+@app.post("/swipe")
+async def handle_swipe(
+    request: Request,
+    target: str = Form(...),  # persona ID or user email
+    direction: str = Form(...)  # "right" or "left"
+):
+    session = request.session
+    email = session.get("email")
+
+    if not email:
+        return JSONResponse({"error": "Not logged in"}, status_code=401)
+
+    swipes_file = "backend/data/swipes.json"
+    if os.path.exists(swipes_file):
+        with open(swipes_file, "r") as f:
+            swipes = json.load(f)
+    else:
+        swipes = {}
+
+    if email not in swipes:
+        swipes[email] = {"liked": [], "disliked": []}
+
+    if direction == "right" and target not in swipes[email]["liked"]:
+        swipes[email]["liked"].append(target)
+    elif direction == "left" and target not in swipes[email]["disliked"]:
+        swipes[email]["disliked"].append(target)
+
+
+    with open(swipes_file, "w") as f:
+        json.dump(swipes, f, indent=2)
+
+    return JSONResponse({"status": "swipe recorded"})
+
+@app.get("/get_personas")
+def get_personas():
+    with open("backend/data/personas.json", "r") as f:
+        personas = json.load(f)
+    
+    personas = json.load(f)
+    personas_with_ids = []
+    for i, persona in enumerate(personas):
+        p = persona.copy()
+        if "id" not in p:
+            p["id"] = f"persona_{i}"
+        personas_with_ids.append(p)
+    return JSONResponse(personas_with_ids)
+

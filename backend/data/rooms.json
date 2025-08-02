@@ -3,7 +3,7 @@
     "room_id": "T101",
     "type": "twin",
     "capacity": 2,
-    "floor": "ground",
+    "floor": 0,
     "has_window": true,
     "occupants": [{
         "name": "Sharanya Hegde",
@@ -27,7 +27,7 @@
     "room_id": "T102",
     "type": "twin",
     "capacity": 2,
-    "floor": "ground",
+    "floor": 0,
     "has_window": false,
     "occupants": []
   },
@@ -35,7 +35,7 @@
     "room_id": "T103",
     "type": "twin",
     "capacity": 2,
-    "floor": "ground",
+    "floor": 0,
     "has_window": true,
     "occupants": []
   },
@@ -43,7 +43,7 @@
     "room_id": "T104",
     "type": "twin",
     "capacity": 2,
-    "floor": "ground",
+    "floor": 0,
     "has_window": false,
     "occupants": []
   },
@@ -51,7 +51,7 @@
     "room_id": "T105",
     "type": "triple",
     "capacity": 3,
-    "floor": "ground",
+    "floor": 0,
     "has_window": false,
     "occupants": []
   },
@@ -59,7 +59,7 @@
     "room_id": "T201",
     "type": "twin",
     "capacity": 2,
-    "floor": "first",
+    "floor": 1,
     "has_window": true,
     "occupants": []
   },
@@ -67,7 +67,7 @@
     "room_id": "T202",
     "type": "twin",
     "capacity": 2,
-    "floor": "first",
+    "floor": 1,
     "has_window": false,
     "occupants": [{"name": "Jannat Sheikh",
         "dob": "2005-01-25",
@@ -84,7 +84,7 @@
     "room_id": "T203",
     "type": "twin",
     "capacity": 2,
-    "floor": "first",
+    "floor": 1,
     "has_window": true,
     "occupants": []
   },
@@ -92,7 +92,7 @@
     "room_id": "T204",
     "type": "twin",
     "capacity": 2,
-    "floor": "first",
+    "floor": 1,
     "has_window": false,
     "occupants": []
   },
@@ -100,7 +100,7 @@
     "room_id": "T205",
     "type": "triple",
     "capacity": 3,
-    "floor": "first",
+    "floor": 1,
     "has_window": true,
     "occupants": []
   }

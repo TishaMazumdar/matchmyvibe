@@ -81,9 +81,9 @@ def compute_compatibility(traits1, traits2):
 
 def compute_logistics_score(user_prefs, room):
     matches = 0
-    if user_prefs["room_type"] == room["type"]:
+    if user_prefs["room_type"] == room["room_type"]:
         matches += 1
-    if user_prefs["floor"] == room["floor"]:
+    if user_prefs.get("floor") == room.get("floor"):
         matches += 1
     if user_prefs["has_window"] == room["has_window"]:
         matches += 1
