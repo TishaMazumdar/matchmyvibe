@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>aVoid - Find Your Perfect Roommate</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- Electric Sorbet Color Palette --- */
+        :root {
+            --bg-color: #FFFAF0; /* Floral White */
+            --text-color: #34314C; /* Deep Charcoal */
+            --primary-accent: #FF5E78; /* Fiery Rose */
+            --secondary-accent: #00C49A; /* Vibrant Teal */
+            --subtle-ui: #FFE5D9; /* Light Peach */
+            --white: #FFFFFF;
+        }
+
+        /* --- Base Styles & Reset --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        section {
+            padding: 80px 0;
+        }
+
+        h1, h2, h3 {
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+        }
+
+        h2 {
+            font-size: clamp(2rem, 4vw, 2.8rem);
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        h2 .highlight {
+            color: var(--primary-accent);
+        }
+
+        p {
+            margin-bottom: 1rem;
+        }
+
+        /* --- Navigation --- */
+        .main-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(255, 250, 240, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--subtle-ui);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-color);
+            text-decoration: none;
+        }
+        
+        .logo .highlight {
+            color: var(--primary-accent);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-accent);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 28px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-accent);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--white);
+            color: var(--primary-accent);
+            border-color: var(--primary-accent);
+            transform: translateY(-2px);
+        }
+        
+        /* --- Hero Section --- */
+        .hero {
+            padding-top: 160px;
+            min-height: 90vh;
+            display: flex;
+            align-items: center;
+        }
+
+        .hero-content {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero-content h1 {
+            margin-bottom: 24px;
+        }
+
+        .hero-content p {
+            font-size: 1.1rem;
+            max-width: 650px;
+            margin: 0 auto 40px;
+            opacity: 0.8;
+        }
+        
+        /* --- How It Works Section --- */
+        #how-it-works {
+            background-color: var(--white);
+        }
+        
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            text-align: center;
+        }
+        
+        .step-card {
+            padding: 24px;
+        }
+        
+        .step-icon {
+            width: 80px;
+            height: 80px;
+            background-color: var(--subtle-ui);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            font-size: 2.5rem;
+            color: var(--secondary-accent);
+            border: 3px solid var(--secondary-accent);
+        }
+        
+        .step-card h3 {
+            margin-bottom: 12px;
+            font-size: 1.3rem;
+        }
+
+        .step-card p {
+            font-size: 0.95rem;
+            opacity: 0.8;
+        }
+
+        /* --- Features Section --- */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 32px;
+        }
+        
+        .feature-card {
+            background-color: var(--white);
+            padding: 32px;
+            border-radius: 16px;
+            border: 1px solid var(--subtle-ui);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.07);
+        }
+
+        .feature-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 12px;
+            color: var(--secondary-accent);
+        }
+
+        /* --- Personas Section --- */
+        #personas {
+            background-color: var(--white);
+        }
+        
+        .personas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+        }
+        
+        .persona-card {
+            background-color: var(--bg-color);
+            border: 2px solid var(--subtle-ui);
+            padding: 24px;
+            border-radius: 16px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .persona-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: var(--primary-accent);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+        
+        .persona-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 8px;
+        }
+        
+        .persona-card .vibe {
+            font-style: italic;
+            color: var(--secondary-accent);
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        
+        .persona-card .oneliner {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            flex-grow: 1;
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary-accent);
+            color: var(--white);
+            margin-top: 20px;
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--white);
+            color: var(--secondary-accent);
+            border-color: var(--secondary-accent);
+            transform: translateY(-2px);
+        }
+
+        .icebreaker-output {
+            margin-top: 16px;
+            padding: 12px;
+            background-color: var(--white);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px dashed var(--subtle-ui);
+        }
+
+        /* --- AI Match Section --- */
+        #ai-match {
+            background-color: var(--subtle-ui);
+        }
+        .ai-match-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        .match-pair {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            justify-content: center;
+        }
+        .match-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        .avatar-simran { background-color: var(--primary-accent); }
+        .avatar-meher { background-color: var(--secondary-accent); }
+        .plus-icon {
+            font-size: 2.5rem;
+            color: var(--text-color);
+            font-weight: 700;
+        }
+        .ai-match-container p {
+            max-width: 600px;
+            text-align: center;
+        }
+        #match-explanation-card {
+            background-color: var(--white);
+            border-radius: 16px;
+            padding: 32px;
+            width: 100%;
+            max-width: 700px;
+            margin-top: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+        #match-explanation-output {
+            min-height: 60px;
+            font-style: italic;
+        }
+
+
+        /* --- Team Section --- */
+        .team-content {
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .team-content h3 {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+            color: var(--text-color);
+        }
+
+        /* --- Footer --- */
+        footer {
+            background-color: var(--text-color);
+            color: var(--bg-color);
+            padding: 40px 0;
+            text-align: center;
+        }
+        
+        .footer-container p {
+            margin: 0;
+            opacity: 0.8;
+        }
+
+        /* --- Responsive --- */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none; /* Simple hiding for mobile on a minimal site */
+            }
+            .hero {
+                padding-top: 120px;
+                min-height: 70vh;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="main-nav">
+        <div class="container nav-container">
+            <a href="#hero" class="logo">aVoid<span class="highlight">.</span></a>
+            <div class="nav-links">
+                <a href="#how-it-works">How It Works</a>
+                <a href="#features">Features</a>
+                <a href="#ai-match">AI Match</a>
+                <a href="#team">Team</a>
+            </div>
+            <a href="#" class="btn btn-primary">Get Started</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header id="hero" class="hero">
+        <div class="container hero-content">
+            <h1>Find your vibe. Find your roommate.</h1>
+            <p>aVoid uses a smart, voice-powered survey to match you with the most compatible roommates for women's co-living spaces. Skip the awkward interviews and find someone who truly gets you.</p>
+            <a href="#" class="btn btn-primary">🎤 Start the Voice Survey</a>
+        </div>
+    </header>
+
+    <main>
+        <!-- How It Works Section -->
+        <section id="how-it-works">
+            <div class="container">
+                <h2>How It <span class="highlight">Works</span></h2>
+                <div class="steps-grid">
+                    <div class="step-card">
+                        <div class="step-icon">💬</div>
+                        <h3>1. Take the Survey</h3>
+                        <p>Answer 5 simple, conversational questions about your lifestyle, from sleep schedules to social energy.</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-icon">🧠</div>
+                        <h3>2. Get Matched</h3>
+                        <p>Our AI analyzes your responses and calculates a compatibility score with potential roommates.</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-icon">💖</div>
+                        <h3>3. Swipe & Connect</h3>
+                        <p>Browse your top matches in a fun, swipe-based interface. Connect when you find your perfect vibe!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features">
+            <div class="container">
+                <h2>Core <span class="highlight">Features</span></h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <h3>Voice-First Survey</h3>
+                        <p>Our integration with Omnidim.io's Voice AI makes sharing your preferences natural and effortless. Just talk to us!</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>Smart AI Matching</h3>
+                        <p>We go beyond surface-level traits to understand deep compatibility, ensuring a higher chance of a great match.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>✨ AI-Powered Explanations</h3>
+                        <p>Using the Gemini API, we generate creative explanations for why you'd vibe with a match, building trust and excitement.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>Safe & Secure</h3>
+                        <p>Designed specifically for women's co-living spaces, with a focus on privacy, fairness, and creating a secure community.</p>
+                    </div>
+                     <div class="feature-card">
+                        <h3>Intelligent Room Allocation</h3>
+                        <p>We don't just match people; we suggest the most suitable room based on shared preferences and availability.</p>
+                    </div>
+                     <div class="feature-card">
+                        <h3>✨ AI Icebreakers</h3>
+                        <p>Kickstart conversations with fun, personalized icebreaker questions generated by the Gemini API for each potential roommate.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Personas Section -->
+        <section id="personas">
+            <div class="container">
+                <h2>Meet Your Potential <span class="highlight">Vibe</span></h2>
+                <div class="personas-grid">
+                    <div class="persona-card" data-name="Simran Ahuja" data-vibe="Glamorous & Outgoing" data-oneliner="Those 2am maggi runs? Count me in 💅.">
+                        <div class="persona-avatar">S</div>
+                        <h3>Simran Ahuja</h3>
+                        <p class="vibe">Glamorous & Outgoing</p>
+                        <p class="oneliner">"Those 2am maggi runs? Count me in 💅."</p>
+                        <div class="icebreaker-output" id="icebreaker-simran">Click below!</div>
+                        <button class="btn btn-secondary generate-icebreaker">✨ Generate Icebreaker</button>
+                    </div>
+                    <div class="persona-card" data-name="Meher Kaur" data-vibe="Calm & Neat" data-oneliner="Clean desk, calm mind — and coffee before convo.">
+                        <div class="persona-avatar">M</div>
+                        <h3>Meher Kaur</h3>
+                        <p class="vibe">Calm & Neat</p>
+                        <p class="oneliner">"Clean desk, calm mind — and coffee before convo."</p>
+                        <div class="icebreaker-output" id="icebreaker-meher">Click below!</div>
+                        <button class="btn btn-secondary generate-icebreaker">✨ Generate Icebreaker</button>
+                    </div>
+                    <div class="persona-card" data-name="Jannat Sheikh" data-vibe="Techie & Indie Nerd" data-oneliner="We’ll vibe over indie playlists and coding sprints.">
+                        <div class="persona-avatar">J</div>
+                        <h3>Jannat Sheikh</h3>
+                        <p class="vibe">Techie & Indie Nerd</p>
+                        <p class="oneliner">"We’ll vibe over indie playlists and coding sprints."</p>
+                        <div class="icebreaker-output" id="icebreaker-jannat">Click below!</div>
+                        <button class="btn btn-secondary generate-icebreaker">✨ Generate Icebreaker</button>
+                    </div>
+                     <div class="persona-card" data-name="Rini Das" data-vibe="Nature Girl & Old Soul" data-oneliner="Peaceful mornings and filter coffee fix everything.">
+                        <div class="persona-avatar">R</div>
+                        <h3>Rini Das</h3>
+                        <p class="vibe">Nature Girl & Old Soul</p>
+                        <p class="oneliner">"Peaceful mornings and filter coffee fix everything."</p>
+                        <div class="icebreaker-output" id="icebreaker-rini">Click below!</div>
+                        <button class="btn btn-secondary generate-icebreaker">✨ Generate Icebreaker</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- AI Match Explanation Section -->
+        <section id="ai-match">
+            <div class="container ai-match-container">
+                <h2>Why They'd <span class="highlight">Vibe</span></h2>
+                <p>Our AI can find the surprising connections between different personalities. See how Simran (the social butterfly) and Meher (the calm creative) could be a perfect match!</p>
+                <div class="match-pair">
+                    <div class="match-avatar avatar-simran">S</div>
+                    <div class="plus-icon">+</div>
+                    <div class="match-avatar avatar-meher">M</div>
+                </div>
+                <div id="match-explanation-card">
+                    <div id="match-explanation-output">Click the button to see the AI's take!</div>
+                </div>
+                <button id="generate-match-explanation" class="btn btn-primary">✨ Explain The Match</button>
+            </div>
+        </section>
+
+        <!-- Team Section -->
+        <section id="team">
+            <div class="container team-content">
+                <h2>Built for a <span class="highlight">Hackathon</span></h2>
+                <h3>By Tisha Mazumdar & Megha Yadav</h3>
+                <p>aVoid is a project born out of excitement for building with AI. We're passionate about creating solutions that solve real-world problems in a fun and innovative way.</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container footer-container">
+            <p>&copy; 2024 aVoid. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // --- Gemini API Integration ---
+
+        const API_KEY = ""; // Leave this empty, it will be handled by the environment
+
+        async function callGemini(prompt, element) {
+            element.textContent = 'Thinking...';
+            element.style.cursor = 'wait';
+
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${API_KEY}`;
+            const payload = {
+                contents: [{
+                    role: "user",
+                    parts: [{ text: prompt }]
+                }]
+            };
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API Error: ${response.statusText}`);
+                }
+
+                const result = await response.json();
+                
+                if (result.candidates && result.candidates.length > 0) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    element.textContent = text.trim();
+                } else {
+                    element.textContent = 'Sorry, I couldn\'t think of anything. Try again!';
+                }
+            } catch (error) {
+                console.error("Gemini API call failed:", error);
+                element.textContent = 'Error! Please check the console.';
+            } finally {
+                 element.style.cursor = 'default';
+            }
+        }
+
+        // --- Feature 1: Icebreaker Generator ---
+        document.querySelectorAll('.generate-icebreaker').forEach(button => {
+            button.addEventListener('click', () => {
+                const card = button.closest('.persona-card');
+                const name = card.dataset.name;
+                const vibe = card.dataset.vibe;
+                const oneliner = card.dataset.oneliner;
+                const outputElement = card.querySelector('.icebreaker-output');
+
+                const prompt = `You are a friendly and witty chatbot for a roommate matching app. Generate one, short, fun, and creative icebreaker question (less than 15 words) for a potential roommate named ${name}. Their vibe is "${vibe}" and their one-liner is "${oneliner}". The question should be something you'd ask to start a fun chat. Do not use quotation marks.`;
+                
+                callGemini(prompt, outputElement);
+            });
+        });
+
+        // --- Feature 2: AI Match Explanation ---
+        document.getElementById('generate-match-explanation').addEventListener('click', (e) => {
+            const button = e.target;
+            const outputElement = document.getElementById('match-explanation-output');
+            
+            const prompt = `You are a insightful and optimistic AI for a roommate matching app. Two potential roommates are Simran (vibe: Glamorous, outgoing, gossips over chai) and Meher (vibe: Calm, neat freak, plant mom). In a creative and friendly paragraph (about 50-70 words), explain why these two very different people would actually make a great, balanced roommate pair. Focus on how their differences could complement each other.`;
+
+            callGemini(prompt, outputElement);
+            button.textContent = '✨ Regenerate Explanation';
+        });
+
+    </script>
+
+</body>
+</html>

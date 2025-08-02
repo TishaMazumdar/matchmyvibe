@@ -110,7 +110,7 @@ def match_user_to_rooms(new_user, rooms):
             compatibility_score = 5
 
         # Logistics preference score
-        logistics_score = compute_logistics_score(new_user["preferences"], room)
+        logistics_score = compute_logistics_score(new_user["room_preferences"], room)
 
         # Numerology for new user
         user_life_path = calculate_life_path_number(new_user["dob"])
@@ -140,3 +140,52 @@ def match_user_to_rooms(new_user, rooms):
             best_room = room["room_id"]
 
     return best_room, f"{round(best_score * 10, 1)}%"
+
+def rank_rooms_for_user(new_user, rooms):
+    scored_rooms = []
+
+    user_life_path = calculate_life_path_number(new_user["dob"])
+
+    for room in rooms:
+        if len(room.get("occupants", [])) >= room["capacity"]:
+            continue
+
+        # Roommate compatibility
+        compatibility_total = 0
+        if room.get("occupants"):
+            for occupant in room["occupants"]:
+                compatibility_total += compute_compatibility(new_user["traits"], occupant["traits"])
+            compatibility_score = compatibility_total / len(room["occupants"])
+        else:
+            compatibility_score = 5
+
+        # Logistics score
+        logistics_score = compute_logistics_score(new_user["preferences"], room)
+
+        # Numerology score
+        numerology_scores = []
+        for occupant in room["occupants"]:
+            if "dob" in occupant:
+                occupant_path = calculate_life_path_number(occupant["dob"])
+                score = numerology_score(user_life_path, occupant_path)
+                numerology_scores.append(score)
+        numerology_score_value = (
+            sum(numerology_scores) / len(numerology_scores)
+            if numerology_scores else 0
+        )
+
+        # Final hybrid score (weighted)
+        final_score = (0.7 * compatibility_score +
+                       0.2 * logistics_score +
+                       0.1 * numerology_score_value)
+
+        scored_rooms.append({
+            "room_id": room["room_id"],
+            "room_data": room,
+            "score": round(final_score * 10, 2)  # Convert to percentage
+        })
+
+    # Sort rooms by descending score
+    scored_rooms.sort(key=lambda x: x["score"], reverse=True)
+
+    return scored_rooms

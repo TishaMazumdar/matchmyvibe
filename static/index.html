@@ -41,6 +41,13 @@
   </style>
 </head>
 <body>
+  {% if request.session.get("email") %}
+    <p>Welcome, {{ request.session['email'] }}!</p>
+    <form action="/logout" method="get">
+      <button type="submit">Logout</button>
+    </form>
+  {% endif %}
+
   <div class="form-container">
     <h2 id="form-title">Login</h2>
 

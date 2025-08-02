@@ -2,6 +2,7 @@ from fastapi import FastAPI, Request, Form
 from fastapi.responses import RedirectResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 from starlette.middleware.sessions import SessionMiddleware
+from backend.matcher import rank_rooms_for_user
 import json
 import os
 from dotenv import load_dotenv
@@ -203,3 +204,28 @@ async def receive_traits(request: Request):
     save_users(users)
 
     return JSONResponse({"status": "traits saved successfully"})
+
+@app.get("/ranked-matches")
+async def get_ranked_matches(request: Request):
+    session = request.session
+    user_id = session.get("user_id")
+
+    if not user_id:
+        return JSONResponse({"error": "Not logged in"}, status_code=401)
+
+    # Load user data
+    with open("data/users.json", "r") as f:
+        users = json.load(f)
+    user_data = users.get(user_id)
+
+    if not user_data:
+        return JSONResponse({"error": "User not found"}, status_code=404)
+
+    # Load room data
+    with open("data/rooms.json", "r") as f:
+        rooms_data = json.load(f)
+
+    # Rank rooms
+    ranked_matches = rank_rooms_for_user(user_data, rooms_data)
+
+    return JSONResponse({"matches": ranked_matches})

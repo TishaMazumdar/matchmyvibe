@@ -5,7 +5,23 @@
     "capacity": 2,
     "floor": "ground",
     "has_window": true,
-    "occupants": []
+    "occupants": [{
+        "name": "Sharanya Hegde",
+        "dob": "2004-05-11",
+        "vibe": "Beachy, soft spoken, artsy",
+        "traits": {
+            "daily_rhythm": "morning",
+            "lifestyle": "social",
+            "study_habits": "quiet",
+            "room_vibe": "cozy",
+            "conflict_style": "avoidant"
+        },
+        "room_preferences": {
+            "room_type": "twin",
+            "floor": 1,
+            "has_window": true
+        }
+    }]
   },
   {
     "room_id": "T102",
@@ -53,7 +69,16 @@
     "capacity": 2,
     "floor": "first",
     "has_window": false,
-    "occupants": []
+    "occupants": [{"name": "Jannat Sheikh",
+        "dob": "2005-01-25",
+        "vibe": "Techie + indie music nerd",
+        "traits": {
+            "daily_rhythm": "night",
+            "lifestyle": "chill",
+            "study_habits": "collab",
+            "room_vibe": "maximal",
+            "conflict_style": "direct"
+        }}]
   },
   {
     "room_id": "T203",
