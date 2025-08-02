@@ -39,7 +39,7 @@ numerology_chart = {
 }
 ```
 
-This influences the final **roommate compatibility score** alongside personality and room preferences.
+This influences the final **roommate compatibility score** alongside personality and room preferences. [Numerology source](https://www.mindbodygreen.com/articles/most-romantically-compatible-life-path-numbers-in-numerology?srsltid=AfmBOoqFMbrvQhnUZGZBXMpWVbupNFJ_YRRykfCMcYjOUveTeNo45ww_)
 
 ---
 
@@ -71,7 +71,7 @@ This influences the final **roommate compatibility score** alongside personality
 
 ---
 
-## 🤝 Team Avoid
+## 🤝 Team aVoid
 
 This project was designed and developed by **Tisha Mazumdar** and **Megha Yadav** under the team name **aVoid**, as a submission to the **SheBuilds Hackathon** 2025.
 
