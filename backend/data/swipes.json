@@ -19,7 +19,9 @@
   },
   "b@gmail.com": {
     "liked": [
-      "z@gmail.com"
+      "z@gmail.com",
+      "persona_0",
+      "a@gmail.com"
     ],
     "disliked": [
       "persona_5",

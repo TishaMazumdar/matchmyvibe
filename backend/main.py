@@ -2,7 +2,7 @@ from fastapi import FastAPI, Request, Form
 from fastapi.responses import RedirectResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 from starlette.middleware.sessions import SessionMiddleware
-from backend.matcher import rank_rooms_for_user, compute_compatibility, calculate_life_path_number, numerology_score
+from backend.matcher import match_user_to_rooms, rank_rooms_for_user, compute_compatibility, calculate_life_path_number, numerology_score
 import json
 import os
 from dotenv import load_dotenv
