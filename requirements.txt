@@ -6,3 +6,4 @@ Jinja2
 requests
 python-multipart
 itsdangerous
+google-generativeai
